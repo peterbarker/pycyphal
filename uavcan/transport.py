@@ -1,5 +1,6 @@
 #encoding=utf-8
 
+import sys
 import time
 import math
 import ctypes
@@ -7,8 +8,12 @@ import struct
 import logging
 import binascii
 import functools
-import collections
 
+import collections
+if sys.version_info.major == 3 and sys.version_info.minor >= 10:
+    from collections.abc import MutableSequence
+else:
+    from collections import MutableSequence
 
 import uavcan
 import uavcan.dsdl as dsdl
@@ -200,7 +205,7 @@ class PrimitiveValue(BaseValue):
             self._bits = format(int_value, "0" + str(self.type.bitlen) + "b")
 
 
-class ArrayValue(BaseValue, collections.MutableSequence):
+class ArrayValue(BaseValue, MutableSequence):
     def __init__(self, uavcan_type, tao=False, *args, **kwargs):
         super(ArrayValue, self).__init__(uavcan_type, *args, **kwargs)
         value_bitlen = getattr(self.type.value_type, "bitlen", None)
